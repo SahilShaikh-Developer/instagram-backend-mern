@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router";
 import axios from "axios";
+import { toast } from "react-toastify";
 
 const Register = () => {
   const [username, setUsername] = useState(null);
@@ -10,7 +11,8 @@ const Register = () => {
   async function handleSubmit(e) {
     e.preventDefault();
 
-    axios
+    try{
+      await axios
       .post(
         "http://localhost:3000/api/auth/register",
         {
@@ -22,11 +24,18 @@ const Register = () => {
           withCredentials: true,
         },
       )
-      .then((res) => {
-        console.log(res.data);
-      });
+      
+      toast.success("Account created successfully!");
+    } catch(error){
+      toast.error(
+      error.response?.data?.message || "Registration failed!"
+    );
+    }
+      
   }
 
+  
+ 
   return (
     <main>
       <div className="form-container">
@@ -70,4 +79,5 @@ const Register = () => {
   );
 };
 
-export default Register;
+
+export default Register
