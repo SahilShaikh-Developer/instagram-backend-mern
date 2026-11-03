@@ -1,31 +1,35 @@
 import React, { useState } from "react";
 import "../style/form.scss";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 import axios from "axios";
-import { toast } from "react-toastify";
+import { useAuth } from "../hooks/useAuth";
 
 const Login = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
-  async function handleSubmit(e) {
+
+  const {handleLogin,loading} = useAuth()
+  const navigate = useNavigate()
+
+  if(loading){
+    return (
+      <h1>Loading...</h1>
+    )
+  }
+
+ function handleSubmit(e) {
     e.preventDefault();
 
-    try {
-      axios.post(
-        "http://localhost:3000/api/auth/login",
-        {
-          username,
-          password,
-        },
-        {
-          withCredentials: true,
-        },
-      );
-      toast.success("Login successful!");
-    } catch (error) {
-      toast.error(error.response?.data?.message || "Login failed!");
-    }
+    handleLogin(username,password)
+
+    .then(res=>{
+      console.log(res);
+      navigate("/")
+      
+    })
+
+    
   }
   return (
     <main>

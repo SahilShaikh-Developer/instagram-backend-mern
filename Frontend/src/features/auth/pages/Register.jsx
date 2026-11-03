@@ -11,26 +11,7 @@ const Register = () => {
   async function handleSubmit(e) {
     e.preventDefault();
 
-    try{
-      await axios
-      .post(
-        "http://localhost:3000/api/auth/register",
-        {
-          username,
-          email,
-          password,
-        },
-        {
-          withCredentials: true,
-        },
-      )
-      
-      toast.success("Account created successfully!");
-    } catch(error){
-      toast.error(
-      error.response?.data?.message || "Registration failed!"
-    );
-    }
+    
       
   }
 

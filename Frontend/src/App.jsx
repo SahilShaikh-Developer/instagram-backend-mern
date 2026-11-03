@@ -2,17 +2,16 @@ import React from 'react'
 import AppRoutes from './AppRoutes'
 import "./style.scss"
 import { ToastContainer } from "react-toastify";
+import { AuthProvider } from './features/auth/auth.context.jsx';
 
 
 const App = () => {
   return (
   <>
+  <AuthProvider>
    <AppRoutes/>
-   <ToastContainer
-        position="top-right"
-        autoClose={3000}
-        theme="dark"
-      />
+   </AuthProvider>
+ 
   </>
 
    
