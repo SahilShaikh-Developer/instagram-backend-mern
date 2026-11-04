@@ -8,7 +8,7 @@ function AppRoutes(){
         <Routes>
             <Route path="/" element={<h1>this is home page</h1>}/>
             <Route path="/login" element={<Login/>}/>
-             <Route path="/register" element={<Register/>}/>
+            <Route path="/register" element={<Register/>}/>
         </Routes>
 
         </BrowserRouter>

@@ -1,7 +1,6 @@
 import React from 'react'
-import AppRoutes from './AppRoutes'
-import "./style.scss"
-import { ToastContainer } from "react-toastify";
+import AppRoutes from './app.routes.jsx'
+import "./features/shared/global.scss"
 import { AuthProvider } from './features/auth/auth.context.jsx';
 
 
