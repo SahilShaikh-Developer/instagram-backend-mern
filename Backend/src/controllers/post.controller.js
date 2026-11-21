@@ -66,8 +66,8 @@ async function getPostDetailsController(req, res) {
 }
 
 async function likePostController(req, res) {
-  const username = req.user.username
-  const postId = req.params.postId
+  const username = req.user.username;
+  const postId = req.params.postId;
 
   const post = await postModel.findById(postId);
 
@@ -87,9 +87,22 @@ async function likePostController(req, res) {
   });
 }
 
+async function getFeedController(req, res) {
+   
+  const posts = await postModel.find().populate("user")
+
+  
+
+  res.status(200).json({
+    message: "Post fetched successfully",
+    posts,
+  });
+}
+
 module.exports = {
   createPostController,
   getPostController,
   getPostDetailsController,
-  likePostController
+  likePostController,
+  getFeedController
 };

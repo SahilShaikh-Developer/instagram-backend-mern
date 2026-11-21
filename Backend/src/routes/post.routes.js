@@ -2,7 +2,7 @@ const express = require("express");
 const multer = require("multer");
 const postController = require("../controllers/post.controller");
 const identifyUser = require("../middlewares/auth.middleware");
-const { sendFriendRequestController, getReceivedRequestsController, acceptFriendRequestController, rejectFriendRequestController, getFriendsController } = require("../controllers/friendRequest.controller");
+const { sendFriendRequestController, getReceivedRequestsController, acceptFriendRequestController, rejectFriendRequestController, getFriendsController  } = require("../controllers/friendRequest.controller");
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 
@@ -69,5 +69,13 @@ GET /api/posts/friends
 */
 
 postRouter.get( "/friends", identifyUser, getFriendsController);
+
+/* 
+@route GET /api/posts/feed
+@description get all the post created in the DB
+@access private
+*/
+
+postRouter.get("/feed",identifyUser,postController.getFeedController)
 
 module.exports = postRouter;
