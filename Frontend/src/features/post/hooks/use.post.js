@@ -1,28 +1,33 @@
-import { useContext } from "react";
-import { getFeed } from "../services/post.api";
-import {  PostContext} from "../post.context";
+import { useContext, useEffect } from "react";
+import { createPost, getFeed } from "../services/post.api";
+import { PostContext } from "../post.context";
+
+export const usePost = () => {
+  const context = useContext(PostContext);
+
+  const { loading, setloading, post, setpost, feed, setFeed } = context;
+
+  const handleGetFeed = async () => {
+    setloading(true);
+
+    const data = await getFeed();
+    setFeed(data.posts.reverse());
+    setloading(false);
+  };
+  const handleCreatePost = async (imageFile, caption) => {
+    setloading(true);
+
+    const data = await createPost(imageFile, caption);
+
+    setpost(data.post, ...feed);
+
+    setloading(false)
+  };
 
 
-export const usePost = ()=>{
+  useEffect(()=>{
+        handleGetFeed()
+  },[])
 
-    const context = useContext(PostContext)
-
-    const {loading,setloading,post,setpost,feed,setFeed} = context;
-
-  const handleGetFeed = async ()=>{
-
-      setloading(true);
-
-      const data = await getFeed()
-
-      
-      
-      
-      setFeed(data.posts)
-
-      setloading(false)
-  }
-
-  return {loading , feed , post ,handleGetFeed}
-
-}
+  return { loading, feed, post, handleGetFeed ,handleCreatePost};
+};
