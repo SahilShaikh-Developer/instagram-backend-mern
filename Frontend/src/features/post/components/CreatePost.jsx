@@ -5,6 +5,7 @@ import {useNavigate} from "react-router"
 
 const CreatePost = () => {
   const [caption, setCaption] = useState("");
+  const [error, setError] = useState("");
   const postImageInputFieldRef = useRef(null);
 
   const navigate = useNavigate()
@@ -14,20 +15,20 @@ const CreatePost = () => {
 
   async function handleSubmit(e) {
     e.preventDefault();
+    setError("");
 
-    const file = postImageInputFieldRef.current.files[0]
+    const file = postImageInputFieldRef.current.files[0];
+    if (!file) {
+      setError("Please select an image.");
+      return;
+    }
 
-    await handleCreatePost(file,caption)
-
-    navigate("/")
-  }
-
-  if(loading){
-    return (
-      <main>
-        <h1>Creating Post</h1>
-      </main>
-    )
+    const result = await handleCreatePost(file, caption);
+    if (result.success) {
+      navigate("/");
+    } else {
+      setError(result.message);
+    }
   }
 
   return (
@@ -38,7 +39,7 @@ const CreatePost = () => {
           <label className="post-image-label" htmlFor="postImage">
             Select Image{" "}
           </label>
-          <input required ref={postImageInputFieldRef}
+          <input ref={postImageInputFieldRef}
             hidden
             type="file"
             name="postImage"
@@ -54,8 +55,11 @@ const CreatePost = () => {
             id="caption"
             placeholder="Enter Caption"
           />
-          <button className="button primary-button">Create Post</button>
+          <button type="submit" disabled={loading} className="button primary-button">
+            {loading ? "Creating..." : "Create Post"}
+          </button>
         </form>
+        {error && <p className="create-post-error">{error}</p>}
       </div>
     </main>
   );

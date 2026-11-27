@@ -17,28 +17,32 @@ export const usePost = () => {
 
   const { loading, setloading, post, setpost, feed, setFeed } = context;
 
-  const handleGetFeed = useCallback(async () => {
-    setloading(true);
-    try {
-      const data = await getFeed();
-      setFeed(data.posts.reverse());
-      return { success: true };
-    } catch (err) {
-      return { success: false, message: getPostErrorMessage(err) };
-    } finally {
-      setloading(false);
-    }
-  }, [setloading, setFeed]);
+  const runPostAction = useCallback(
+    async (requestFn, onSuccess) => {
+      setloading(true);
+      try {
+        const data = await requestFn();
+        onSuccess(data);
+        return { success: true };
+      } catch (err) {
+        return { success: false, message: getPostErrorMessage(err) };
+      } finally {
+        setloading(false);
+      }
+    },
+    [setloading],
+  );
 
-  const handleCreatePost = async (imageFile, caption) => {
-    setloading(true);
+  const handleGetFeed = useCallback(
+    () => runPostAction(() => getFeed(), (data) => setFeed(data.posts.reverse())),
+    [runPostAction, setFeed],
+  );
 
-    const data = await createPost(imageFile, caption);
-
-    setpost(data.post);
-
-    setloading(false)
-  };
+  const handleCreatePost = (imageFile, caption) =>
+    runPostAction(
+      () => createPost(imageFile, caption),
+      (data) => setpost(data.post),
+    );
 
   return { loading, feed, post, handleGetFeed ,handleCreatePost};
 };

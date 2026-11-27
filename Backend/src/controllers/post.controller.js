@@ -9,6 +9,12 @@ const imageKit = new ImageKit({
 });
 
 async function createPostController(req, res) {
+  if (!req.file) {
+    return res.status(400).json({
+      message: "Image is required",
+    });
+  }
+
   const file = await imageKit.files.upload({
     file: await toFile(Buffer.from(req.file.buffer), "file"),
     fileName: "test",
