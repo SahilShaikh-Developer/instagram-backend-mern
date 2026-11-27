@@ -38,14 +38,14 @@ const CreatePost = () => {
           <label className="post-image-label" htmlFor="postImage">
             Select Image{" "}
           </label>
-          <input ref={postImageInputFieldRef}
+          <input required ref={postImageInputFieldRef}
             hidden
             type="file"
             name="postImage"
             id="postImage"
             accept="image/*"
           />
-          <input value={caption}
+          <input required value={caption}
             onChange={(e)=>{
                  setCaption(e.target.value)
             }}
