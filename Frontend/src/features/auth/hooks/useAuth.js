@@ -1,6 +1,6 @@
 import { useContext } from "react";
 import { AuthContext } from "../auth.context.jsx";
-import { login, register } from "../services/auth.api";
+import { login, register, logout } from "../services/auth.api";
 
 function getAuthErrorMessage(err) {
   if (err?.response?.data?.message) {
@@ -17,11 +17,11 @@ export function useAuth() {
 
   const { user, setuser, loading, setloading, authChecked } = context;
 
-  const runAuthAction = async (requestFn) => {
+  const runAuthAction = async (requestFn, onSuccess) => {
     setloading(true);
     try {
       const response = await requestFn();
-      setuser(response.user);
+      onSuccess(response);
       return { success: true };
     } catch (err) {
       return { success: false, message: getAuthErrorMessage(err) };
@@ -31,12 +31,18 @@ export function useAuth() {
   };
 
   const handleLogin = (username, password) =>
-    runAuthAction(() => login(username, password));
+    runAuthAction(() => login(username, password), (res) => setuser(res.user));
 
   const handleRegister = (username, email, password) =>
-    runAuthAction(() => register(username, email, password));
+    runAuthAction(
+      () => register(username, email, password),
+      (res) => setuser(res.user),
+    );
+
+  const handleLogout = () =>
+    runAuthAction(() => logout(), () => setuser(null));
 
   return{
-    user,loading,authChecked,handleLogin,handleRegister
+    user,loading,authChecked,handleLogin,handleRegister,handleLogout
   }
 }
