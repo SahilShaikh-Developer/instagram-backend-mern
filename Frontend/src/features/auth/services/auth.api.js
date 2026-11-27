@@ -9,41 +9,24 @@ const api = axios.create({
 
 
 export async function register(username,email,password){
-
-    try{
      const response = await api.post("/register",{
         username,
         email,
         password,
      })
      return response.data
-    }
-    catch(err){
-        throw new err
-    }
 }
 
 export async function login(username,password){
-    try{
-        const response = await api.post("/login",{
-          username,
-            password,
-        })
-        return response.data
-    }
-    catch(err){
-      console.log(err);
-      
-    }
+    const response = await api.post("/login",{
+      username,
+        password,
+    })
+    return response.data
 }
 
 export async function getMe(){
-    try{
-        const response = await api.get("/get-me")
+    const response = await api.get("/get-me")
 
-        return response.data
-    }
-    catch(err){
-      throw new err
-    }
+    return response.data
 }

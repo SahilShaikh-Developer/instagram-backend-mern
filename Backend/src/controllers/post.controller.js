@@ -91,7 +91,7 @@ async function getFeedController(req, res) {
 
   const user = req.user
    
-  const posts = await Promise.all((await postModel.find().populate("user").lean())
+  const posts = await Promise.all((await postModel.find().populate("user", "username profileImage").lean())
 
   .map( async (post)=>{
 

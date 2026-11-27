@@ -9,6 +9,7 @@ const Login = () => {
 
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
 
   const navigate = useNavigate();
 
@@ -16,15 +17,14 @@ const Login = () => {
 
   const handleSubmit= async(e)=> {
     e.preventDefault();
+    setError("");
 
-    await handleLogin(username, password).then((res) => {
-      console.log(res);
+    const result = await handleLogin(username, password);
+    if (result.success) {
       navigate("/");
-    });
-  }
-
-  if (loading) {
-    return <h1>Loading...</h1>;
+    } else {
+      setError(result.message);
+    }
   }
 
   
@@ -34,7 +34,8 @@ const Login = () => {
         <h1>Login</h1>
         <form onSubmit={handleSubmit}>
           <input
-            onInput={(e) => {
+            value={username}
+            onChange={(e) => {
               setUsername(e.target.value);
             }}
             type="text"
@@ -42,15 +43,19 @@ const Login = () => {
             placeholder="Enter username"
           />
           <input
-            onInput={(e) => {
+            value={password}
+            onChange={(e) => {
               setPassword(e.target.value);
             }}
             type="password"
             name="password"
             placeholder="Enter password"
           />
-          <button type="submit">Login</button>
+          <button type="submit" disabled={loading}>
+            {loading ? "Logging in..." : "Login"}
+          </button>
         </form>
+        {error && <p className="form-error">{error}</p>}
         <p>
           Don't have an account?{" "}
           <Link className="toggleAuthForm" to="/register">

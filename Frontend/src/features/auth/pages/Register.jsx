@@ -7,23 +7,24 @@ import { useAuth } from "../hooks/useAuth";
 const Register = () => {
   const { loading, handleRegister } = useAuth();
 
-  const [username, setUsername] = useState(null);
+  const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
 
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setError("");
 
-    await handleRegister(username, email, password);
-
-    navigate("/");
+    const result = await handleRegister(username, email, password);
+    if (result.success) {
+      navigate("/");
+    } else {
+      setError(result.message);
+    }
   };
-
-  if (loading) {
-    return <h1>Loading...</h1>;
-  }
 
   return (
     <main>
@@ -31,7 +32,8 @@ const Register = () => {
         <h1>Register</h1>
         <form  onSubmit={handleSubmit}>
           <input
-            onInput={(e) => {
+            value={username}
+            onChange={(e) => {
               setUsername(e.target.value);
             }}
             type="text"
@@ -39,7 +41,8 @@ const Register = () => {
             placeholder="Enter username"
           />
           <input
-            onInput={(e) => {
+            value={email}
+            onChange={(e) => {
               setEmail(e.target.value);
             }}
             type="text"
@@ -47,15 +50,19 @@ const Register = () => {
             placeholder="Enter email"
           />
           <input
-            onInput={(e) => {
+            value={password}
+            onChange={(e) => {
               setPassword(e.target.value);
             }}
             type="password"
             name="password"
             placeholder="Enter password"
           />
-          <button>Register</button>
+          <button type="submit" disabled={loading}>
+            {loading ? "Registering..." : "Register"}
+          </button>
         </form>
+        {error && <p className="form-error">{error}</p>}
 
         <p>
           Already have an account?{" "}

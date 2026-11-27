@@ -1,38 +1,42 @@
 import { useContext } from "react";
 import { AuthContext } from "../auth.context.jsx";
-import { login, register, getMe } from "../services/auth.api";
+import { login, register } from "../services/auth.api";
+
+function getAuthErrorMessage(err) {
+  if (err?.response?.data?.message) {
+    return err.response.data.message;
+  }
+  if (!err?.response && (err?.request || err?.code === "ERR_NETWORK")) {
+    return "Cannot reach the server. Please try again.";
+  }
+  return "Something went wrong. Please try again.";
+}
 
 export function useAuth() {
   const context = useContext(AuthContext);
 
-  const { user, setuser, loading, setloading } = context;
+  const { user, setuser, loading, setloading, authChecked } = context;
 
-  const handleLogin = async (username, password) => {
+  const runAuthAction = async (requestFn) => {
     setloading(true);
     try {
-      const response = await login(username, password);
+      const response = await requestFn();
       setuser(response.user);
+      return { success: true };
     } catch (err) {
-      console.log(err);
+      return { success: false, message: getAuthErrorMessage(err) };
     } finally {
       setloading(false);
     }
   };
 
-  const handleRegister = async (username, email, password) => {
-    setloading(true);
+  const handleLogin = (username, password) =>
+    runAuthAction(() => login(username, password));
 
-    try {
-      const response = await register(username, email, password);
-      setuser(response.user);
-    } catch (err) {
-      console.log(err);
-    } finally {
-      setloading(false);
-    }
-  };
+  const handleRegister = (username, email, password) =>
+    runAuthAction(() => register(username, email, password));
 
   return{
-    user,loading,handleLogin,handleRegister
+    user,loading,authChecked,handleLogin,handleRegister
   }
 }

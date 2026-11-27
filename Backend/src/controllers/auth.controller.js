@@ -27,7 +27,7 @@ async function registerController(req, res) {
   if (isUserAlreadyExists) {
     return res.status(409).json({
       message:
-        "User already exists" + isUserAlreadyExists.email == email
+        isUserAlreadyExists.email === email
           ? "Email already exists"
           : "Username already exists",
     });
@@ -122,6 +122,12 @@ async function getMeController(req,res){
    const userId = req.user.id
 
    const user = await userModel.findById(userId)
+
+   if (!user) {
+     return res.status(401).json({
+       message: "User not found",
+     });
+   }
 
    res.status(200).json({
     user:{
