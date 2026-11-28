@@ -20,6 +20,8 @@ userRouter.post("/follow/:username",identifyUser,userController.followUserContro
 
 userRouter.post("/unfollow/:username",identifyUser,userController.unFollowUserController)
 
+userRouter.get("/:username",identifyUser,userController.getUserProfileController)
+
 
 
 

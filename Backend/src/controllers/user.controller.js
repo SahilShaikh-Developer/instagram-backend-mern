@@ -1,4 +1,5 @@
 const followModel = require("../models/follow.model");
+const postModel = require("../models/post.model");
 const userModel = require("../models/user.model");
 
 async function followUserController(req, res) {
@@ -66,10 +67,46 @@ async function unFollowUserController(req,res){
     })
 }
 
+async function getUserProfileController(req, res) {
+  const username = String(req.params.username);
+
+  const targetUser = await userModel
+    .findOne({ username })
+    .select("_id username bio profileImage")
+    .lean();
+
+  if (!targetUser) {
+    return res.status(404).json({
+      message: "User not found",
+    });
+  }
+
+  const posts = await postModel
+    .find({ user: targetUser._id })
+    .sort({ _id: -1 })
+    .select("_id imgUrl caption")
+    .lean();
+
+  return res.status(200).json({
+    user: {
+      username: targetUser.username,
+      bio: targetUser.bio ?? "",
+      profileImage: targetUser.profileImage ?? "",
+      postsCount: posts.length,
+    },
+    posts: posts.map((post) => ({
+      _id: post._id,
+      imgUrl: post.imgUrl,
+      caption: post.caption ?? "",
+    })),
+  });
+}
+
 
 
 module.exports = { 
     followUserController,
-    unFollowUserController
+    unFollowUserController,
+    getUserProfileController
 
  };
