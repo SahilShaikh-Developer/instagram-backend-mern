@@ -8,7 +8,7 @@ import Nav from "../../shared/components/Nav";
 
 const Feed = () => {
        
-   const { feed , handleGetFeed , loading} = usePost()
+   const { feed , handleGetFeed , loading, handleToggleLike} = usePost()
    const [error, setError] = useState("")
 
    const handleRetry = async () => {
@@ -68,7 +68,7 @@ const Feed = () => {
       <div className="feed">
         <div className="posts">
         {feed.map(post=>{
-          return <Post key={post._id} user={post.user} post={post}/>
+          return <Post key={post._id} user={post.user} post={post} onToggleLike={handleToggleLike}/>
         })}
         </div>
       </div>
